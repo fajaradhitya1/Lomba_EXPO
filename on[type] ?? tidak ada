@@ -1,0 +1,42 @@
+[90m= [39m[
+    [34m"[39m[34mtype[39m[34m"[39m => [32m"[39m[32mservice_account[39m[32m"[39m,
+    [34m"[39m[34mproject_id[39m[34m"[39m => [32m"[39m[32mprestasi-51e6f[39m[32m"[39m,
+    [34m"[39m[34mprivate_key_id[39m[34m"[39m => [32m"[39m[32m7fd023ae492a0f261125268b7e810d42aab961ca[39m[32m"[39m,
+    [34m"[39m[34mprivate_key[39m[34m"[39m => <<<[32mEOS[39m
+      [32m-----BEGIN PRIVATE KEY-----[39m
+      [32mMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDO7I3s20T6ppGP[39m
+      [32mIpy0nx7dDkwFgm2F684CCKZb8wYmcoeE+ay5GUtPFfuq1Olnkr9ZmP8EELuJzWqU[39m
+      [32mTTdON+AXSWSVUnc9RvJ1UwVPG+SXVh+5mbrjv1kCPDzUp74wXQdFK8ctJodj4i4i[39m
+      [32mShqlxVr59F3w7LtasBg8K9y8XpGf6Q9A5AFhz/JOGf6YdZ9E18OLM0w0acYQdn+B[39m
+      [32mkHeK5YB9tTSTq5tZF4gWy5KHzmMzgJX24bhro7VaNEMvi+aKE7doe0dYpvLDD/TX[39m
+      [32mQQlYR43YLDOdFIo9gIXdPcoFKEyvpDBP8srVtdYLFcfzPBEP3UT6HWwP7UeUR/P8[39m
+      [32m+Wonepe9AgMBAAECggEATo9V9NpsrmLl+XtRFmwhChke+KqDjWgwvunsyxURvTAX[39m
+      [32mTn+COYYmZuC4Oyv5b2ax+kDRdQgrQ063S5WjTTF+hSjKpLx548xXSf7akaXL3D8I[39m
+      [32m7Wy1nTjtAKHBEJWc6fyvwW21AWnS1jOtgzwyMMSkXSiPL+SY3v3jPZkDhYq77AMf[39m
+      [32md3KXvS/vsAPZ53TUTixbm5Vbqr4CdRqlGPDXcXHATFWoCb+myKDrzycGI8/OsZEO[39m
+      [32mwfFFXd5js0fau15tNKq3b0T59t//nsebHNyNJU9a3C8BaAIzNiv694MHbGxh57wQ[39m
+      [32mYJbFlQbNxQM46WtOy8Ww1c1f6gXKM/kxWsL47vxYywKBgQDuHnu/+b7/57ytrB7i[39m
+      [32mCSI33fhGlFtaw31z43+i5COhuwMGGYUfQoViW+e0HY1RzFn7hnSlsdTP6KnzVzsu[39m
+      [32mb4JFPKTEWoQtozA0WxaQbZtUGs8sxv0ftigIiBSTwwao0wzp76EarLtbyaxh5YtK[39m
+      [32mPkR1Ik30zdYyryqCqJkklkjNlwKBgQDedmOCrPKcmjGcOTlxwowEan4opFrvRgbg[39m
+      [32mZgn0LaqyhekSzSSKMPGskZkND5W+lwWX9FU7G5hcJK6/20Q89OBEZtxBbIY/PTHX[39m
+      [32miY9pBE6lvuMznOUl6LjD6zkEIxeZmkJxXxaKl7upXVHw53M3etzcVrsCchhv+o7R[39m
+      [32mAAvDT9EXywKBgQCsLlSza4bmCo6PUn9+WLZqiVIGzy4DwooLa3yWr7roLo8wMPHm[39m
+      [32mubYzeltgDWJrvIVwcDgWvDEzKX0CnZgIqs8a+4/0/7LGQVMQ+LCnPOptdXlLWpQc[39m
+      [32mAx6NlMC0W/iLyRh0bDclT7Om2nyQyWfgBoh/3o9aLiDtw2XM1tbt8tGv/wKBgGSz[39m
+      [32mLoReiUv+OGrBNJGcQQlWs1juXQNmrYIyblsLuPMqzsBmAB5V3XACUEerQFuPvUZ1[39m
+      [32moYcqDKPZLwlF1fPJ3SLZdOZgm7xQlRk9+Z7OBlPcvrgEU23/lHOLLLoEsJAlVeI/[39m
+      [32m6tI9sQMPbSIhgvQgN4297NVElG9L+g39eVWl8b5VAoGAMaLPYEUJsfHLmRrvGu+Y[39m
+      [32mbDaZxI2bI6AsP6CABWpehQgQgStQkIXJFapqnEM+56LPbovY1jQp3Ay8zE6Jn27X[39m
+      [32mTxm6qPF7mbup3QWnB5NSDFyCwpFemDIFTrdGg2F7DeSzkW5EVUUgdlMzrwRAmti2[39m
+      [32mB+TIdIJ0MwLCt0qvyhAS+MA=[39m
+      [32m-----END PRIVATE KEY-----[39m
+      [32mEOS[39m,
+    [34m"[39m[34mclient_email[39m[34m"[39m => [32m"[39m[32mfirebase-adminsdk-fbsvc@prestasi-51e6f.iam.gserviceaccount.com[39m[32m"[39m,
+    [34m"[39m[34mclient_id[39m[34m"[39m => [32m"[39m[32m110593223807350729574[39m[32m"[39m,
+    [34m"[39m[34mauth_uri[39m[34m"[39m => [32m"[39m[32mhttps://accounts.google.com/o/oauth2/auth[39m[32m"[39m,
+    [34m"[39m[34mtoken_uri[39m[34m"[39m => [32m"[39m[32mhttps://oauth2.googleapis.com/token[39m[32m"[39m,
+    [34m"[39m[34mauth_provider_x509_cert_url[39m[34m"[39m => [32m"[39m[32mhttps://www.googleapis.com/oauth2/v1/certs[39m[32m"[39m,
+    [34m"[39m[34mclient_x509_cert_url[39m[34m"[39m => [32m"[39m[32mhttps://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40prestasi-51e6f.iam.gserviceaccount.com[39m[32m"[39m,
+    [34m"[39m[34muniverse_domain[39m[34m"[39m => [32m"[39m[32mgoogleapis.com[39m[32m"[39m,
+  ]

@@ -1,0 +1,23 @@
+[90m= [39m[34;4mApp\Jobs\SyncModuleToFirebase[39;24m {#8922
+    +[1mmodule[22m: [34;4mApp\Models\Module[39;24m {#8935
+      [34mid[39m: [35m1[39m,
+      [34mtitle[39m: [32m"[39m[32mPengenalan ERD[39m[32m"[39m,
+      [34mtype[39m: [32m"[39m[32mmodule[39m[32m"[39m,
+      [34mcourse_id[39m: [35m1[39m,
+      [34morder[39m: [35m0[39m,
+      [34mquiz_questions[39m: [36mnull[39m,
+      [34mcreated_at[39m: [32m"[39m[32m2026-06-16 22:32:57[39m[32m"[39m,
+      [34mupdated_at[39m: [32m"[39m[32m2026-06-16 22:32:57[39m[32m"[39m,
+      [34mpdf_file[39m: [32m"[39m[32mmodules/pdfs/01KV991YYAPFVFVYP5E4Q5B702.pdf[39m[32m"[39m,
+    },
+    +[1mjob[22m: [36mnull[39m,
+    +[1mconnection[22m: [36mnull[39m,
+    +[1mqueue[22m: [36mnull[39m,
+    +[1mdelay[22m: [36mnull[39m,
+    +[1mafterCommit[22m: [36mnull[39m,
+    +[1mmiddleware[22m: [],
+    +[1mchained[22m: [],
+    +[1mchainConnection[22m: [36mnull[39m,
+    +[1mchainQueue[22m: [36mnull[39m,
+    +[1mchainCatchCallbacks[22m: [36mnull[39m,
+  }
