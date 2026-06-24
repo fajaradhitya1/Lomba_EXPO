@@ -1,38 +1,30 @@
-# Gunakan base image PHP 8.4 Apache
 FROM php:8.4-apache
 
-# 1. Install semua dependensi sistem dan ekstensi PHP yang diperlukan
+# 1. Install ekstensi
 RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libzip-dev \
-    libpng-dev \
-    libpq-dev \
-    zip \
-    unzip \
-    git \
+    libicu-dev libzip-dev libpng-dev libpq-dev zip unzip git \
     && docker-php-ext-install intl zip pdo_mysql pdo_pgsql gd
 
-# 2. Perbaikan Anti-Eror MPM:
-# Menonaktifkan semua modul MPM bawaan dan memaksa hanya menggunakan prefork
-RUN a2dismod -f mpm_event mpm_worker mpm_event && a2enmod mpm_prefork
+# 2. Hapus total semua konfigurasi MPM bawaan
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.conf
 
-# 3. Setup Apache untuk Laravel
-# Mengaktifkan rewrite dan merubah DocumentRoot ke folder /public
-RUN a2enmod rewrite
+# 3. Aktifkan HANYA prefork
+RUN a2enmod mpm_prefork rewrite
+
+# 4. Setup Laravel Public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# 4. Copy aplikasi dan install Composer
+# 5. Copy aplikasi
 COPY . /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 WORKDIR /var/www/html
 
-# 5. Install dependensi dengan bypass check
+# 6. Install dependensi
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
-# 6. Set permissions agar storage bisa diakses Laravel
+# 7. Permission & Entrypoint
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 7. Eksekusi Apache secara manual (Mencegah script bawaan image yang sering eror)
-# Kita gunakan apache2ctl -D FOREGROUND
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+# PENTING: Gunakan exec agar Apache menangkap sinyal dengan benar
+CMD ["apache2ctl", "-D", "FOREGROUND"]
