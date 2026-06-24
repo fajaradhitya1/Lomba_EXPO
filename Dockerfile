@@ -25,4 +25,7 @@ RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
+    RUN apachectl -M || true
+RUN ls -lah /etc/apache2/mods-enabled/ || true
+
 CMD ["apache2-foreground"]
