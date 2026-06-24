@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y \
 
 RUN a2enmod rewrite
 
+# --- FIX MPM CONFLICT ---
+RUN a2dismod mpm_event mpm_worker || true \
+    && a2enmod mpm_prefork
+
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' \
     /etc/apache2/sites-available/000-default.conf
 
