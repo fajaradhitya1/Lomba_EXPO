@@ -1,32 +1,30 @@
 <?php
+
 namespace App\Observers;
 
 use App\Models\Module;
-use App\Jobs\SyncModuleToFirestoreJob;
+use App\Jobs\SyncModuleToFirebase;
+use App\Jobs\SyncQuizToFirebase;
 
 class ModuleObserver
 {
     public function created(Module $module): void
     {
-        SyncModuleToFirestoreJob::dispatch(
-            $module->id,
-            'created'
-        );
+        $this->dispatchSync($module);
     }
 
     public function updated(Module $module): void
     {
-        SyncModuleToFirestoreJob::dispatch(
-            $module->id,
-            'updated'
-        );
+        $this->dispatchSync($module);
     }
 
-    public function deleted(Module $module): void
+    private function dispatchSync(Module $module): void
     {
-        SyncModuleToFirestoreJob::dispatch(
-            $module->id,
-            'deleted'
-        );
+        if ($module->type === 'quiz') {
+            SyncQuizToFirebase::dispatch($module);
+        } else {
+            SyncModuleToFirebase::dispatch($module);
+        }
     }
 }
+

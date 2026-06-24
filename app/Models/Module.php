@@ -8,7 +8,15 @@ use App\Models\Course; // <--- INI YANG KURANG (PENTING!)
 
 class Module extends Model
 {
-    protected $fillable = ['title', 'type', 'course_id', 'order', 'quiz_questions', 'pdf_file'];
+    protected $fillable = [
+    'course_id', 
+    'title', 
+    'pdf_file', // pastikan ada
+    'type',     // INI HARUS ADA!
+    'order', 
+    'is_completed',
+    'quiz_questions' // Tambahkan ini jika Anda menyimpan soal di kolom JSON
+];
 
     protected $casts = [
         'quiz_questions' => 'array',

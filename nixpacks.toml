@@ -1,0 +1,7 @@
+[variables]
+PHP_VERSION = "8.4"
+NIXPACKS_PHP_EXTENSIONS = "intl,grpc,zip,gd"
+COMPOSER_ALLOW_SUPERUSER = "1"
+
+[phases.build]
+cmds = ["composer install --optimize-autoloader --no-interaction"]
