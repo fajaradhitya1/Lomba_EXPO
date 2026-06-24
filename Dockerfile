@@ -1,19 +1,33 @@
 FROM php:8.4-apache
 
-# 1. Install dependensi
+# 1. Install apache2 dan dependensi PHP
 RUN apt-get update && apt-get install -y \
-    libicu-dev libzip-dev libpng-dev libpq-dev zip unzip git \
+    apache2 \
+    libicu-dev \
+    libzip-dev \
+    libpng-dev \
+    libpq-dev \
+    zip \
+    unzip \
+    git \
     && docker-php-ext-install intl zip pdo_mysql pdo_pgsql gd
 
-# 2. Hapus total semua konfigurasi Apache yang berpotensi bentrok
-RUN rm -rf /etc/apache2/mods-enabled/* \
+# 2. Hapus total semua konfigurasi Apache bawaan
+RUN rm -rf /etc/apache2/sites-enabled/* /etc/apache2/sites-available/* /etc/apache2/mods-enabled/*
+
+# 3. Buat konfigurasi minimal untuk prefork
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     && a2enmod mpm_prefork rewrite
 
-# 3. Paksa Apache untuk tidak memuat modul selain prefork
-RUN echo "LoadModule mpm_prefork_module /usr/lib/apache2/modules/mod_mpm_prefork.so" > /etc/apache2/mods-enabled/mpm_prefork.load
-
-# 4. Setup Laravel Public
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# 4. Tambahkan vhost minimal
+RUN echo "<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf \
+    && a2ensite 000-default
 
 # 5. Copy aplikasi
 COPY . /var/www/html
@@ -26,5 +40,5 @@ RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 # 7. Permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 8. Gunakan perintah langsung, BUKAN apache2-foreground
-CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
+# 8. Start Apache
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
