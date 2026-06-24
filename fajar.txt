@@ -4,3 +4,16 @@ php artisan queue:work
 
 
 jalani ini kalau module nya ga ke up
+
+
+
+
+"config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
