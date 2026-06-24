@@ -17,3 +17,6 @@ jalani ini kalau module nya ga ke up
             "php-http/discovery": true
         }
     },
+
+
+      "google/cloud-firestore": "^2.1",
