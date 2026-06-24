@@ -1,41 +1,33 @@
 FROM php:8.4-apache
 
-# Install ekstensi yang dibutuhkan
+# 1. Install ekstensi yang dibutuhkan termasuk pdo_pgsql
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     libpng-dev \
+    libpq-dev \
     zip \
     unzip \
-    && docker-php-ext-install intl zip pdo_mysql gd
+    && docker-php-ext-install intl zip pdo_mysql pdo_pgsql gd
 
-# Perbaikan MPM (Menghilangkan error More than one MPM)
+# 2. Perbaikan MPM: Matikan modul yang bentrok dan gunakan prefork
 RUN a2dismod mpm_event mpm_worker && a2enmod mpm_prefork
 
-# Konfigurasi Apache
-RUN a2enmod rewrite
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
-# Copy aplikasi dan Composer
+# 3. Copy kode aplikasi
 COPY . /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# 4. Setup Apache
+RUN a2enmod rewrite
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
 WORKDIR /var/www/html
 
-# Install dependensi
+# 5. Install dependensi
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
-# Set permissions
+# 6. Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# --- PENAMBAHAN: Entrypoint untuk migrasi dan optimasi ---
-# Kita buat script kecil untuk menjalankan perintah Laravel sebelum Apache start
-RUN echo '#!/bin/sh' > /usr/local/bin/entrypoint.sh && \
-    echo 'php artisan migrate --force' >> /usr/local/bin/entrypoint.sh && \
-    echo 'php artisan config:cache' >> /usr/local/bin/entrypoint.sh && \
-    echo 'php artisan route:cache' >> /usr/local/bin/entrypoint.sh && \
-    echo 'apache2-foreground' >> /usr/local/bin/entrypoint.sh && \
-    chmod +x /usr/local/bin/entrypoint.sh
-
-# Gunakan script entrypoint sebagai perintah utama
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# 7. Gunakan CMD yang bersih
+CMD ["apache2-foreground"]
