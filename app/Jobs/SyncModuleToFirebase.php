@@ -67,9 +67,9 @@ class SyncModuleToFirebase implements ShouldQueue
 
         try {
             $db = new FirestoreClient([
-                'keyFilePath' => storage_path('app/firebase-auth.json'),
-                'transport'   => 'rest'
-            ]);
+    'keyFile'   => json_decode(env('FIREBASE_CREDENTIALS_JSON'), true),
+    'transport' => 'rest'
+]);
 
             $courseDocumentId = str_replace(' ', '_', strtolower($this->module->course->name));
             
