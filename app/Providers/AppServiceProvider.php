@@ -27,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Daftarkan Observer agar sistem sinkronisasi otomatis berjalan
         Module::observe(ModuleObserver::class);
-        
+
+        if (env('APP_ENV') === 'production') {
+            \URL::forceScheme('https');
+        }
     }
 }
