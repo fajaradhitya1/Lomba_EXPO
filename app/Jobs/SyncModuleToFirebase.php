@@ -57,10 +57,14 @@ class SyncModuleToFirebase implements ShouldQueue
                         'folder' => 'modules',
                         'resource_type' => 'auto'
                     ]);
+                    // FIX: Ambil secure_url dari $result dulu, baru inject fl_attachment
+                    $fileUrl = $result['secure_url'];
                     $fileUrl = str_replace('/raw/upload/', '/raw/upload/fl_attachment/', $fileUrl);
                 } catch (\Exception $e) {
                     Log::error("Cloudinary Upload Error: " . $e->getMessage());
                 }
+            } else {
+                Log::warning("File tidak ditemukan di path: " . $filePath);
             }
         }
 
@@ -81,10 +85,10 @@ class SyncModuleToFirebase implements ShouldQueue
                ->collection('modules')
                ->document('modul_' . $this->module->id)
                ->set([
-                   'title' => $this->module->title,
+                   'title'   => $this->module->title,
                    'fileUrl' => $fileUrl,
-                   'order' => $this->module->order ?? 0,
-                   'type' => $this->module->type,
+                   'order'   => $this->module->order ?? 0,
+                   'type'    => $this->module->type,
                ], ['merge' => true]);
 
             // 2. Increment Counter
@@ -94,7 +98,7 @@ class SyncModuleToFirebase implements ShouldQueue
                    'total_materi' => FieldValue::increment(1)
                ], ['merge' => true]);
 
-            Log::info("Job Success: Modul " . $this->module->id . " synced to " . $courseDocumentId);
+            Log::info("Job Success: Modul " . $this->module->id . " synced to " . $courseDocumentId . " | fileUrl: " . $fileUrl);
 
         } catch (\Exception $e) {
             Log::error("Firebase Sync Error: " . $e->getMessage());
