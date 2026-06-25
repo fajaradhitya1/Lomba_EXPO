@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    && docker-php-ext-install intl zip pdo_mysql pdo_pgsql gd \
+    && docker-php-ext-install intl zip pdo_mysql pdo_pgsql gd bcmath \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
