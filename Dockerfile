@@ -1,3 +1,15 @@
+# ===== Stage 1: Build frontend assets =====
+FROM node:20-alpine AS node-builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# ===== Stage 2: PHP application =====
 FROM php:8.4-apache
 
 RUN apt-get update && apt-get install -y \
@@ -18,6 +30,9 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' \
 
 COPY . /var/www/html
 
+# Copy hasil build Vite dari stage Node
+COPY --from=node-builder /app/public/build /var/www/html/public/build
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -31,8 +46,6 @@ RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
-# Tulis entrypoint sebagai file terpisah, bukan inline string,
-# agar lebih mudah dibaca & di-debug
 RUN printf '%s\n' \
     '#!/bin/bash' \
     'set -e' \
