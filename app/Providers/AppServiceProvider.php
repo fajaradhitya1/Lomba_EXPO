@@ -12,10 +12,12 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+         if (env('GOOGLE_APPLICATION_CREDENTIALS')) {
         putenv(
             'GOOGLE_APPLICATION_CREDENTIALS=' .
             env('GOOGLE_APPLICATION_CREDENTIALS')
         );
+         }
     }
 
     public function boot(): void
