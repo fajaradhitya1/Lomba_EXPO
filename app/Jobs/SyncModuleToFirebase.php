@@ -54,12 +54,12 @@ class SyncModuleToFirebase implements ShouldQueue
                 try {
                     $uploader = new UploadApi();
                     $result = $uploader->upload($filePath, [
-                        'folder' => 'modules',
-                        'resource_type' => 'auto'
+                        'folder'        => 'modules',
+                        'resource_type' => 'raw',
+                        'access_mode'   => 'public',
+                        'type'          => 'upload',
                     ]);
-                    // FIX: Ambil secure_url dari $result dulu, baru inject fl_attachment
                     $fileUrl = $result['secure_url'];
-                    $fileUrl = str_replace('/raw/upload/', '/raw/upload/fl_attachment/', $fileUrl);
                 } catch (\Exception $e) {
                     Log::error("Cloudinary Upload Error: " . $e->getMessage());
                 }
