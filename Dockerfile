@@ -50,6 +50,9 @@ RUN printf '%s\n' \
     '#!/bin/bash' \
     'set -e' \
     '' \
+    'echo "=== Fixing storage permissions ==="' \
+    'chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache' \
+    '' \
     'echo "=== Cleaning up MPM modules ==="' \
     'a2dismod mpm_event mpm_worker mpm_prefork 2>/dev/null || true' \
     'rm -f /etc/apache2/mods-enabled/mpm_event.* \' \
