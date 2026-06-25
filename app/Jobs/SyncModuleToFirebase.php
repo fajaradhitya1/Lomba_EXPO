@@ -28,9 +28,8 @@ class SyncModuleToFirebase implements ShouldQueue
 
     public function handle(): void
     {
-        // Pastikan ambil data terbaru
         $this->module = $this->module->fresh();
-        
+
         Log::info("Job Started: Syncing Module ID " . $this->module->id);
 
         Configuration::instance([
@@ -58,7 +57,7 @@ class SyncModuleToFirebase implements ShouldQueue
                         'folder' => 'modules',
                         'resource_type' => 'raw'
                     ]);
-                    $fileUrl = $result['secure_url']; 
+                    $fileUrl = $result['secure_url'];
                 } catch (\Exception $e) {
                     Log::error("Cloudinary Upload Error: " . $e->getMessage());
                 }
@@ -66,13 +65,16 @@ class SyncModuleToFirebase implements ShouldQueue
         }
 
         try {
+            $cred = json_decode(env('FIREBASE_CREDENTIALS_JSON'), true);
+
             $db = new FirestoreClient([
-    'keyFile'   => json_decode(env('FIREBASE_CREDENTIALS_JSON'), true),
-    'transport' => 'rest'
-]);
+                'projectId'   => $cred['project_id'],
+                'credentials' => $cred,
+                'transport'   => 'rest'
+            ]);
 
             $courseDocumentId = str_replace(' ', '_', strtolower($this->module->course->name));
-            
+
             // 1. Sync Modul
             $db->collection('courses')
                ->document($courseDocumentId)
@@ -96,11 +98,10 @@ class SyncModuleToFirebase implements ShouldQueue
 
         } catch (\Exception $e) {
             Log::error("Firebase Sync Error: " . $e->getMessage());
-            throw $e; // Memastikan error dilempar agar tertangkap oleh 'failed'
+            throw $e;
         }
     }
 
-    // FUNGSI INI PENTING: Mencatat error jika job gagal
     public function failed(Throwable $exception): void
     {
         Log::error("JOB GAGAL TOTAL: " . $exception->getMessage());

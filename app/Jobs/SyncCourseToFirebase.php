@@ -30,10 +30,13 @@ class SyncCourseToFirebase implements ShouldQueue
         Log::info("Job Started: Syncing Course ID " . $this->course->id);
 
         try {
+            $cred = json_decode(env('FIREBASE_CREDENTIALS_JSON'), true);
+
             $db = new FirestoreClient([
-    'keyFile'   => json_decode(env('FIREBASE_CREDENTIALS_JSON'), true),
-    'transport' => 'rest'
-]);
+                'projectId'   => $cred['project_id'],
+                'credentials' => $cred,
+                'transport'   => 'rest'
+            ]);
 
             $courseDocumentId = str_replace(' ', '_', strtolower($this->course->name));
 
