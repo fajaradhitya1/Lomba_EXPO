@@ -28,8 +28,6 @@ class SyncModuleToFirebase implements ShouldQueue
     public function handle(): void
     {
         $this->module = $this->module->fresh();
-        Log::info("Job Started: Syncing Module ID " . $this->module->id);
-
         $this->module->load('course');
 
         if (!$this->module->course) {
@@ -39,6 +37,7 @@ class SyncModuleToFirebase implements ShouldQueue
 
         $fileUrl = '';
 
+        // Proses Upload ke Supabase
         if (filled($this->module->pdf_file)) {
             $filePath = storage_path('app/public/' . $this->module->pdf_file);
 
@@ -46,7 +45,6 @@ class SyncModuleToFirebase implements ShouldQueue
                 try {
                     $bucket = 'modules';
                     $objectPath = $this->module->id . '_' . basename($filePath);
-
                     $supabaseUrl = config('services.supabase.url');
                     $supabaseKey = config('services.supabase.key');
 
@@ -54,23 +52,20 @@ class SyncModuleToFirebase implements ShouldQueue
                         'Authorization' => 'Bearer ' . $supabaseKey,
                         'apikey'        => $supabaseKey,
                         'Content-Type'  => 'application/pdf',
-                        'x-upsert'      => 'true', // biar boleh overwrite kalau file sama diupload ulang
+                        'x-upsert'      => 'true',
                     ])->withBody(file_get_contents($filePath), 'application/pdf')
                       ->post("{$supabaseUrl}/storage/v1/object/{$bucket}/{$objectPath}");
 
                     if ($response->successful()) {
                         $fileUrl = "{$supabaseUrl}/storage/v1/object/public/{$bucket}/{$objectPath}";
-                    } else {
-                        Log::error("Supabase Upload Error: " . $response->body());
                     }
                 } catch (\Exception $e) {
-                    Log::error("Supabase Upload Exception: " . $e->getMessage());
+                    Log::error("Supabase Error: " . $e->getMessage());
                 }
-            } else {
-                Log::warning("File tidak ditemukan di path: " . $filePath);
             }
         }
 
+        // Proses Sinkronisasi ke Firestore
         try {
             $cred = json_decode(env('FIREBASE_CREDENTIALS_JSON'), true);
             $db = new FirestoreClient([
@@ -81,6 +76,10 @@ class SyncModuleToFirebase implements ShouldQueue
 
             $courseDocumentId = str_replace(' ', '_', strtolower($this->module->course->name));
 
+            // LOGIKA: Mengambil kolom 'pertemuan' dari database.
+            // Jika kosong, default ke 'id' agar tetap terurut dan tidak 0.
+            $pertemuanValue = (int) ($this->module->pertemuan ?? $this->module->id);
+
             $db->collection('courses')
                ->document($courseDocumentId)
                ->collection('modules')
@@ -88,7 +87,7 @@ class SyncModuleToFirebase implements ShouldQueue
                ->set([
                    'title'   => $this->module->title,
                    'fileUrl' => $fileUrl,
-                   'order'   => $this->module->order ?? 0,
+                   'order'   => $pertemuanValue, // Key 'order' tetap untuk konsistensi di Flutter
                    'type'    => $this->module->type,
                ], ['merge' => true]);
 
@@ -96,7 +95,7 @@ class SyncModuleToFirebase implements ShouldQueue
                ->document($courseDocumentId)
                ->set(['total_materi' => FieldValue::increment(1)], ['merge' => true]);
 
-            Log::info("Job Success: Modul " . $this->module->id . " synced | fileUrl: " . $fileUrl);
+            Log::info("Job Success: Modul " . $this->module->id . " synced | Pertemuan: " . $pertemuanValue);
 
         } catch (\Exception $e) {
             Log::error("Firebase Sync Error: " . $e->getMessage());

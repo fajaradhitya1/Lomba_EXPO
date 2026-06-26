@@ -30,6 +30,12 @@ class ModuleResource extends Resource
                     TextInput::make('title')
                         ->required()
                         ->maxLength(255),
+                        TextInput::make('pertemuan')
+            ->label('Nomor Pertemuan')
+            ->numeric()
+            ->required()
+            ->default(1)
+            ->helperText('Masukkan urutan pertemuan (Contoh: 1, 2, 3)'),
                         
                     Select::make('type')
                         ->options([

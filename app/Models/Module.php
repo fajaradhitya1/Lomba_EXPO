@@ -13,7 +13,7 @@ class Module extends Model
     'title', 
     'pdf_file', // pastikan ada
     'type',     // INI HARUS ADA!
-    'order', 
+    'pertemuan', 
     'is_completed',
     'quiz_questions' // Tambahkan ini jika Anda menyimpan soal di kolom JSON
 ];
