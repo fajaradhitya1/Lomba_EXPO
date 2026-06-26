@@ -6,26 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
-{
-    Schema::create('modules', function (Blueprint $table) {
-        $table->id();
-        $table->string('title');
-        $table->string('type');
-        $table->integer('pertemuan')->default(1);
-        $table->unsignedBigInteger('course_id')->nullable();
-        $table->integer('order')->default(0);
-        $table->json('quiz_questions')->nullable(); // Wajib JSON untuk menyimpan data array kuis
-        $table->timestamps();
-    });
-}
+    {
+        // Gunakan ifNotExists agar tidak error jika tabel sudah terlanjur ada
+        if (!Schema::hasTable('modules')) {
+            Schema::create('modules', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->string('type');
+                $table->integer('pertemuan')->default(1);
+                $table->unsignedBigInteger('course_id')->nullable();
+                $table->integer('order')->default(0);
+                $table->json('quiz_questions')->nullable();
+                $table->timestamps();
+            });
+        } else {
+            // JIKA TABEL SUDAH ADA, kita pastikan kolom 'pertemuan' ada
+            Schema::table('modules', function (Blueprint $table) {
+                if (!Schema::hasColumn('modules', 'pertemuan')) {
+                    $table->integer('pertemuan')->default(1);
+                }
+            });
+        }
+    }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('modules');
