@@ -12,6 +12,8 @@ return new class extends Migration
     public function up() {
     Schema::table('modules', function (Blueprint $table) {
         $table->renameColumn('order', 'pertemuan');
+        $table->string('pdf_file')->nullable()->change();
+        $table->string('type')->default('module')->change();
     });
 }
 
