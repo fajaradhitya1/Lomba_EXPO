@@ -3,8 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\Module;
-use Cloudinary\Configuration\Configuration;
-use Cloudinary\Api\Upload\UploadApi;
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Firestore\FieldValue;
 use Illuminate\Bus\Queueable;
@@ -12,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -29,16 +28,7 @@ class SyncModuleToFirebase implements ShouldQueue
     public function handle(): void
     {
         $this->module = $this->module->fresh();
-
         Log::info("Job Started: Syncing Module ID " . $this->module->id);
-
-        Configuration::instance([
-            'cloud' => [
-                'cloud_name' => config('cloudinary.cloud_name'),
-                'api_key'    => config('cloudinary.api_key'),
-                'api_secret' => config('cloudinary.api_secret'),
-            ]
-        ]);
 
         $this->module->load('course');
 
@@ -48,20 +38,33 @@ class SyncModuleToFirebase implements ShouldQueue
         }
 
         $fileUrl = '';
+
         if (filled($this->module->pdf_file)) {
             $filePath = storage_path('app/public/' . $this->module->pdf_file);
+
             if (file_exists($filePath)) {
                 try {
-                    $uploader = new UploadApi();
-                    $result = $uploader->upload($filePath, [
-                        'folder'        => 'modules',
-                        'resource_type' => 'raw',
-                        'access_mode'   => 'public',
-                        'type'          => 'upload',
-                    ]);
-                    $fileUrl = $result['secure_url'];
+                    $bucket = 'modules';
+                    $objectPath = $this->module->id . '_' . basename($filePath);
+
+                    $supabaseUrl = config('services.supabase.url');
+                    $supabaseKey = config('services.supabase.key');
+
+                    $response = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $supabaseKey,
+                        'apikey'        => $supabaseKey,
+                        'Content-Type'  => 'application/pdf',
+                        'x-upsert'      => 'true', // biar boleh overwrite kalau file sama diupload ulang
+                    ])->withBody(file_get_contents($filePath), 'application/pdf')
+                      ->post("{$supabaseUrl}/storage/v1/object/{$bucket}/{$objectPath}");
+
+                    if ($response->successful()) {
+                        $fileUrl = "{$supabaseUrl}/storage/v1/object/public/{$bucket}/{$objectPath}";
+                    } else {
+                        Log::error("Supabase Upload Error: " . $response->body());
+                    }
                 } catch (\Exception $e) {
-                    Log::error("Cloudinary Upload Error: " . $e->getMessage());
+                    Log::error("Supabase Upload Exception: " . $e->getMessage());
                 }
             } else {
                 Log::warning("File tidak ditemukan di path: " . $filePath);
@@ -70,7 +73,6 @@ class SyncModuleToFirebase implements ShouldQueue
 
         try {
             $cred = json_decode(env('FIREBASE_CREDENTIALS_JSON'), true);
-
             $db = new FirestoreClient([
                 'projectId'   => $cred['project_id'],
                 'credentials' => $cred,
@@ -79,7 +81,6 @@ class SyncModuleToFirebase implements ShouldQueue
 
             $courseDocumentId = str_replace(' ', '_', strtolower($this->module->course->name));
 
-            // 1. Sync Modul
             $db->collection('courses')
                ->document($courseDocumentId)
                ->collection('modules')
@@ -91,14 +92,11 @@ class SyncModuleToFirebase implements ShouldQueue
                    'type'    => $this->module->type,
                ], ['merge' => true]);
 
-            // 2. Increment Counter
             $db->collection('courses')
                ->document($courseDocumentId)
-               ->set([
-                   'total_materi' => FieldValue::increment(1)
-               ], ['merge' => true]);
+               ->set(['total_materi' => FieldValue::increment(1)], ['merge' => true]);
 
-            Log::info("Job Success: Modul " . $this->module->id . " synced to " . $courseDocumentId . " | fileUrl: " . $fileUrl);
+            Log::info("Job Success: Modul " . $this->module->id . " synced | fileUrl: " . $fileUrl);
 
         } catch (\Exception $e) {
             Log::error("Firebase Sync Error: " . $e->getMessage());

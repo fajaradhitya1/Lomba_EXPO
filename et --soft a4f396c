@@ -1,0 +1,38 @@
+[33m89962b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m fix: Fixkan Modul dan services
+[33m8168022[m fix: Fixkan Modul dan services
+[33ma4f396c[m[33m ([m[1;31morigin/main[m[33m)[m fix: Fixkan Modul
+[33mb008217[m fix: Fixkan Modul
+[33m05ad2c3[m fix: Fixkan Modul
+[33m253b24f[m fix: Fixkan Quiz
+[33m8d615a4[m fix: tambah ekstensi bcmath untuk Google Protobuf
+[33m4137a1a[m fix: tambah ekstensi bcmath + auto-fix storage permission saat startup
+[33mbdf3b90[m fix: pakai parameter credentials, bukan keyFile (deprecated di v2.1.0)
+[33m5fd3150[m fix: jangan set GOOGLE_APPLICATION_CREDENTIALS kalau env-nya kosong
+[33m91bc26b[m fix: baca firebase credential dari env var, bukan file
+[33m2be5643[m feat: sync course ke Firestore via observer
+[33mad02a48[m fix: force https scheme dan trust proxy untuk asset URL
+[33m30a481b[m fix: implement FilamentUser contract supaya bisa akses panel
+[33mecd8d89[m fix: tambah multi-stage build untuk compile asset Vite
+[33m558ba87[m fix: gunakan DATABASE_URL sesuai variable Railway
+[33m664187c[m fix: gunakan DATABASE_URL sesuai variable Railway
+[33meb13b51[m cleanup railway config
+[33m80bc52c[m cleanup railway config
+[33mc8ab666[m cleanup railway config
+[33m5dc3cbc[m Fix MPM load conflict via total cleanup
+[33m67cbdb0[m Fix MPM load conflict via total cleanup
+[33m56e3c12[m Fix MPM load conflict via total cleanup
+[33m97ca7c9[m Fix MPM conflict and add pdo_pgsql driver
+[33mae5666b[m Fix MPM conflict and add pdo_pgsql driver
+[33m0882f89[m Fix MPM conflict and add pdo_pgsql driver
+[33m1fdea6a[m Fix MPM conflict and add pdo_pgsql driver
+[33md1d7185[m Fix MPM conflict and add pdo_pgsql driver
+[33m70adfc4[m Add entrypoint for auto-migration and optimization
+[33mfd601dc[m Fix apache MPM conflict and set public root
+[33m0740083[m Fix composer lock and ignore platform reqs
+[33m371f65c[m dockerfile
+[33m25dc6e7[m dockerfile
+[33m7908fb0[m Migrate to Kreait Firebase and clean dependencies
+[33m9509379[m Migrate to Kreait Firebase and clean dependencies
+[33m665d622[m Fix dependency conflicts and update to latest versions
+[33m1dabb7a[m Add runtime.txt and php.ini for Railway configuration
+[33m97ad3c4[m Initial commit for Lomba Expo
