@@ -15,6 +15,7 @@ return new class extends Migration
         $table->id();
         $table->string('title');
         $table->string('type');
+        $table->integer('pertemuan')->default(1);
         $table->unsignedBigInteger('course_id')->nullable();
         $table->integer('order')->default(0);
         $table->json('quiz_questions')->nullable(); // Wajib JSON untuk menyimpan data array kuis
